@@ -9,7 +9,7 @@ output:
 
 
 
-## Project thoughts
+## Project thoughts/Proposal 2nd Paragraph
 
 I'm interested in exploring data related to port infrastructure. I would love to write a thesis on port infrastructure, and I would like it to be more data science heavy rather than historical, so if possible, I'd like to take advantage of this opportunity to engage with port infrastructure data and explore what's out there. Port infrastructure is really broad, so I'm thinking more specifically about investigating port efficiency in terms of shipping containers. The shipping container was one of the most important inventions of the 20th century, but now we are confronted with a shipping container shortage because they are just sitting in ports, waiting to be unloaded/loaded. COVID left us with a supply chain crisis, and this won't be solved until the containers are more quickly unloaded and turned around. I'm thinking about poking around for container unloading/loading data (or other relevant indicators of efficiency) before/during/after the height of COVID. I'm not sure what question I'll ask or what associations I want to look for, but these are my initial ideas.
 
