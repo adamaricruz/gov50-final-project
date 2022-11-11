@@ -14,12 +14,46 @@ output:
 I'm interested in exploring data related to port infrastructure. I would love to write a thesis on port infrastructure, and I would like it to be more data science heavy rather than historical, so if possible, I'd like to take advantage of this opportunity to engage with port infrastructure data and explore what's out there. Port infrastructure is really broad, so I'm thinking more specifically about investigating port efficiency in terms of shipping containers. The shipping container was one of the most important inventions of the 20th century, but now we are confronted with a shipping container shortage because they are just sitting in ports, waiting to be unloaded/loaded. COVID left us with a supply chain crisis, and this won't be solved until the containers are more quickly unloaded and turned around. I'm thinking about poking around for container unloading/loading data (or other relevant indicators of efficiency) before/during/after the height of COVID. I'm not sure what question I'll ask or what associations I want to look for, but these are my initial ideas.
 
 Proposal:
-Does the efficiency of a port depend on its size? In this study, I plan to examine the extent to which the size of the port (how much area it spans) affects the efficiency (how many shipping containers are imported and exported in a year). While ports are normally categorized by cargo volume, I'm curious about size in its more literal meaning. I hypothesize that larger ports are more efficient. I expect that larger ports are able to include more shipping container cranes, so it can unload and load vessels at a higher rate. I will analyze data about port volume in terms of imports and exports in the US from the years 2016-2020 because one year may be an anomaly. I will group the data by location and calculate the efficiency of each port by using the "trade type" and "volume" variables to find the total number of containers TEU's it handled in one year. I will perform these calculations for each year from 2016-2020 respectively. Then I will use data about the size of each of these ports for each of those years (in case a port was expanded), and investigate if there's a significant correlation between these size and efficiency across all the different ports. If I observe that an increase in efficiency as size of a port increases, then this would support my hypothesis. On the other hand, if there's a decrease in efficiency as port size stays the same or increases, then this would suggest that my hypothesis is false. This study would be insightful for sustainability and climate conscious reasons, as expanding ports is costly and can be harmful to the environment. We would have to find creative solutions to support the ever increasing networks of globalization. 
+Is there a relationship between the efficiency of a port and the number of shipping container cranes? In this study, I plan to examine the extent to which the number of cranes in a given port  affects the efficiency (how many shipping containers are imported and exported in a year). While ports are normally categorized by cargo volume, I'm curious about crane capacity. I hypothesize that ports with more cranes are more efficient. since they can unload and load vessels at a higher rate. I will analyze data about port volume in terms of imports and exports in the US from the years 2016-2020 because one year may be an anomaly. I will group the data by location and calculate the efficiency of each port by using the "trade type" and "volume" variables to find the total number of containers TEU's it handled in one year. I will perform these calculations for each year from 2016-2020 respectively. Then I will use data about the number of cranes in these ports and investigate if there's a significant correlation between cranes and efficiency across all the different ports. If I observe that an increase in efficiency as the number of cranes increases, then this would support my hypothesis. On the other hand, if there's a decrease in efficiency as number of cranes stays the same or increases, then this would suggest that my hypothesis is false. This study would be insightful for sustainability and climate conscious reasons, as expanding ports is costly and can be harmful to the environment. We would have to find creative solutions to support the ever increasing networks of globalization, such as cranes that take up less space and are more versatile. 
 
 ```{r}
+library(tidyverse)
+library(dbplyr)
+library(ggplot2)
 
+crane_data<-read_csv("data/realcrane_data.csv")
 
+port_data<-read_csv("data/port_data_UPDATED.csv")
+
+port_data<-rename(port_data, Year = 'Reporting Year')
+port_data$Year <- as.numeric(as.character(port_data$Year))
+
+port_data<-port_data|>
+  filter(Year==c(2016,2018,2019))
+
+joined<- port_data|>
+  left_join(crane_data)|>
+  select(Year, `Port ID`, `Trade Type`, `Percent Change`, `Units`, `Number of Cranes`, `Port`)
+
+joined<-joined|>
+  group_by(`Port ID`)|>
+  mutate(crane_change=((max(`Number of Cranes`)- min(`Number of Cranes`))/min(`Number of Cranes`))*100)|>
+  drop_na()|>
+  filter(`Trade Type`=="TOTAL")
+
+plot1<-ggplot(data = joined, mapping = aes(x=`Number of Cranes`, y=Year))+
+              geom_point()+
+  labs(title="Number of Cranes for Various Ports from 2016-2019")
+plot1
+
+plot2<-ggplot(data = joined, mapping = aes(x=crane_change, y=`Percent Change`))+
+              geom_point(aes(colour = factor(Year)))+ 
+  labs(x="Percentage Change of # of Cranes", y="Percentage Change of Efficiency", title="Growth of Cranes vs Efficiency from 2016-2019", colour = "Year")+
+geom_smooth(method= "loess", se=FALSE)
+plot2
+#plot1 data visualization i can compare the growth (rate of change) of cranes to the change in efficiency as a scatterplot
 ```
+
 
 
 
