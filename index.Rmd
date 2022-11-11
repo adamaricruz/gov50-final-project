@@ -41,9 +41,12 @@ joined<-joined|>
   drop_na()|>
   filter(`Trade Type`=="TOTAL")
 
+joined$`Port ID`<- with(joined, reorder(`Port ID`, `Number of Cranes`))
+
+
 plot1<-ggplot(data = joined, mapping = aes(x=`Number of Cranes`, y=Year))+
-              geom_point()+
-  labs(title="Number of Cranes for Various Ports from 2016-2019")
+              geom_point(aes(colour = factor(`Port ID`)))+
+  labs(title="Number of Cranes for Various Ports from 2016-2019", colour = "Port ID")
 plot1
 
 plot2<-ggplot(data = joined, mapping = aes(x=crane_change, y=`Percent Change`))+
